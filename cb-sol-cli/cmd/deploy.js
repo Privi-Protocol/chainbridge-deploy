@@ -149,7 +149,7 @@ async function deployBridgeContract(args) {
         args.relayerThreshold,
         ethers.utils.parseEther(args.fee.toString()),
         args.expiry,
-        { gasPrice: args.gasPrice, gasLimit: args.gasLimit}
+        // { gasPrice: args.gasPrice, gasLimit: args.gasLimit}
     );
     await contract.deployed();
     args.bridgeContract = contract.address
