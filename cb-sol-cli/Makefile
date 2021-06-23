@@ -1,4 +1,4 @@
-SOL_URL=https://github.com/ChainSafe/chainbridge-solidity
+SOL_URL=https://github.com/privi-Protocol/chainbridge-solidity
 SOL_VERSION="v1.0.0"
 
 fetch-contracts:
