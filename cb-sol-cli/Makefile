@@ -1,5 +1,5 @@
 SOL_URL=https://github.com/privi-Protocol/chainbridge-solidity
-SOL_VERSION="v1.0.0"
+SOL_VERSION="v1.0.2"
 
 fetch-contracts:
 	@echo " > \033[32mFetching chainbridge-solidity contracts... \033[0m "
