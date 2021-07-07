@@ -46,6 +46,7 @@ const approveCmd = new Command("approve")
 
 const depositCmd = new Command("deposit")
     .description("Initiates a bridge transfer")
+    .option('--token <address>', 'Token address', constants.ERC20_ADDRESS)
     .option('--amount <value>', "Amount to transfer", 1)
     .option('--dest <id>', "Destination chain ID", 1)
     .option('--recipient <address>', 'Destination recipient address', constants.relayerAddresses[4])
@@ -53,16 +54,18 @@ const depositCmd = new Command("deposit")
     .option('--bridge <address>', 'Bridge contract address', constants.BRIDGE_ADDRESS)
     .action(async function (args) {
         await setupParentArgs(args, args.parent.parent)
-        args.decimals = args.parent.decimals
+        const erc20Instance = new ethers.Contract(args.token, constants.ContractABIs.Erc20Mintable.abi, args.wallet);
+        args.decimals = await erc20Instance.decimals();
 
         // Instances
         const bridgeInstance = new ethers.Contract(args.bridge, constants.ContractABIs.Bridge.abi, args.wallet);
-        const data = '0x' +
+        const data = ethers.utils.hexZeroPad(args.token, 32) + // token Address (32 bytes)
             ethers.utils.hexZeroPad(ethers.utils.bigNumberify(expandDecimals(args.amount, args.parent.decimals)).toHexString(), 32).substr(2) +    // Deposit Amount        (32 bytes)
             ethers.utils.hexZeroPad(ethers.utils.hexlify((args.recipient.length - 2)/2), 32).substr(2) +    // len(recipientAddress) (32 bytes)
             args.recipient.substr(2);                    // recipientAddress      (?? bytes)
 
         log(args, `Constructed deposit:`)
+        log(args, `  Token: ${args.token}`)
         log(args, `  Resource Id: ${args.resourceId}`)
         log(args, `  Amount: ${expandDecimals(args.amount, args.parent.decimals).toHexString()}`)
         log(args, `  len(recipient): ${(args.recipient.length - 2)/ 2}`)
